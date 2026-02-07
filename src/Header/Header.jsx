@@ -1,46 +1,47 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useCartStore } from "../Store/cartStore";
+import { FaShoppingCart, FaHeart, FaUser } from "react-icons/fa";
 
 const Header = () => {
-  const [open, setOpen] = useState(false); // Burger menu
-  const [showLogin, setShowLogin] = useState(true); // Modal boshlang'ich holati
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Foydalanuvchi login qilganmi
+  const [showLogin, setShowLogin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { cart } = useCartStore();
   const totalCount = cart.reduce((sum, item) => sum + item.count, 0);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Shu yerda haqiqiy auth bo'lishi mumkin
-    setIsLoggedIn(true); // Login qilindi
-    setShowLogin(false); // Modalni yopish
+    setIsLoggedIn(true);
+    setShowLogin(false);
   };
 
   return (
     <>
-      <header className="w-full bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+      <header className="w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+
+          {/* LOGO */}
           <h1 className="text-2xl font-extrabold tracking-wide text-blue-400">
-           MobilDo‘kon
+            MobilDo‘kon
           </h1>
 
           {/* DESKTOP MENU */}
-          <nav className="hidden md:flex gap-8 text-lg font-semibold">
+          <nav className="hidden md:flex gap-8 text-lg font-semibold items-center">
             <NavLink
               to="/"
               className={({ isActive }) =>
                 isActive
-                  ? "text-blue-400 border-b-2 border-blue-400 pb-1"
-                  : "hover:text-blue-400 duration-300"
+                  ? "text-blue-400 border-b-2 border-blue-400 pb-1 flex items-center gap-2"
+                  : "hover:text-blue-400 duration-300 flex items-center gap-2"
               }
             >
-              Home
+              🏠 Home
             </NavLink>
 
-            <NavLink to="/cart" className="relative">
-              Cart
+            <NavLink to="/cart" className="relative flex items-center gap-1">
+              <FaShoppingCart className="text-xl" /> Cart
               {totalCount > 0 && (
-                <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
                   {totalCount}
                 </span>
               )}
@@ -50,70 +51,51 @@ const Header = () => {
               to="/favourite"
               className={({ isActive }) =>
                 isActive
-                  ? "text-blue-400 border-b-2 border-blue-400 pb-1"
-                  : "hover:text-blue-400 duration-300"
+                  ? "text-blue-400 border-b-2 border-blue-400 pb-1 flex items-center gap-1"
+                  : "hover:text-blue-400 duration-300 flex items-center gap-1"
               }
             >
-              Favourite
+              <FaHeart className="text-xl text-pink-400" /> Favourite
             </NavLink>
-          </nav>
 
-          {/* BUTTON (DESKTOP) */}
-          {!isLoggedIn && (
-            <div className="hidden md:block">
+            {!isLoggedIn && (
               <button
                 onClick={() => setShowLogin(true)}
-                className="px-5 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 duration-300 font-semibold shadow-md"
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 duration-300 font-semibold shadow-md"
               >
-                Login
+                <FaUser /> Login
               </button>
-            </div>
-          )}
+            )}
+          </nav>
 
-          {/* BURGER BUTTON (MOBILE) */}
-          <button
-            className="md:hidden text-3xl"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? "✖" : "☰"}
-          </button>
-        </div>
-
-        {/* MOBILE MENU */}
-        {open && (
-          <div className="md:hidden bg-slate-800 px-6 py-5 flex flex-col gap-4 text-lg font-semibold animate-slideDown">
-            <NavLink to="/" onClick={() => setOpen(false)}>
-              Home
-            </NavLink>
-            <NavLink to="/cart" onClick={() => setOpen(false)}>
-              Cart {totalCount > 0 && (
-                <span className="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+          {/* MOBILE ICONS */}
+          <div className="flex md:hidden items-center gap-4 text-white text-xl">
+            <NavLink to="/cart" className="relative">
+              <FaShoppingCart />
+              {totalCount > 0 && (
+                <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
                   {totalCount}
                 </span>
               )}
             </NavLink>
-            <NavLink to="/favourite" onClick={() => setOpen(false)}>
-              Favourite
+
+            <NavLink to="/favourite">
+              <FaHeart className="text-pink-400" />
             </NavLink>
+
             {!isLoggedIn && (
-              <button
-                onClick={() => {
-                  setShowLogin(true);
-                  setOpen(false);
-                }}
-                className="mt-3 px-5 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 duration-300 font-semibold shadow-md"
-              >
-                Login
+              <button onClick={() => setShowLogin(true)}>
+                <FaUser />
               </button>
             )}
           </div>
-        )}
+        </div>
       </header>
 
       {/* LOGIN MODAL */}
       {!isLoggedIn && showLogin && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 w-96 relative shadow-lg">
+          <div className="bg-white rounded-2xl p-8 w-96 relative shadow-lg animate-fadeIn">
             <h2 className="text-2xl font-bold mb-4 text-slate-800">Ro‘yxatdan o‘tish</h2>
             <form className="flex flex-col gap-4" onSubmit={handleLogin}>
               <input
